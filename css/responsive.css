@@ -1,0 +1,115 @@
+/* Mobile and Tablet Media Queries */
+
+/* Mobile Nav Menu */
+.mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.4rem;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast);
+}
+
+.mobile-menu-btn:hover {
+  background: var(--bg-glass-hover);
+}
+
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+
+.mobile-overlay.active { display: block; }
+
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 280px;
+  height: 100%;
+  background: var(--bg-surface);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid var(--border-color);
+  z-index: 1000;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mobile-drawer.active { right: 0; }
+
+.mobile-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mobile-drawer-close {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.mobile-drawer .mobile-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: background var(--transition-fast);
+}
+
+.mobile-drawer .mobile-link:hover {
+  background: var(--bg-glass-hover);
+}
+
+.mobile-drawer .mobile-link i {
+  width: 20px;
+  text-align: center;
+  color: var(--accent-primary);
+}
+
+@media (max-width: 1024px) {
+  .nav-container { padding: 0 15px; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .mobile-menu-btn { display: flex; }
+
+  main { padding-top: 70px; }
+  
+  .glass-card { padding: 20px; }
+  
+  .chat-window {
+    width: calc(100vw - 40px);
+    right: -10px;
+    bottom: 70px;
+    height: 60vh;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  .btn { width: 100%; justify-content: center; }
+}

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product | Safari Premium</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .product-detail{display:flex;gap:50px;margin-top:20px}
+    .gallery{flex:1;max-width:520px;position:sticky;top:90px;align-self:flex-start}
+    .gallery-main{width:100%;aspect-ratio:1;border-radius:var(--radius-lg);overflow:hidden;background:var(--bg-glass);margin-bottom:15px;position:relative;cursor:zoom-in}
+    .gallery-main img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+    .gallery-main:hover img{transform:scale(1.08)}
+    .gallery-thumbs{display:flex;gap:12px}
+    .thumb{width:80px;height:80px;border-radius:var(--radius-md);overflow:hidden;border:3px solid transparent;cursor:pointer;transition:all .2s;opacity:.6}
+    .thumb.active{border-color:var(--accent-primary);opacity:1;box-shadow:0 0 12px rgba(99,102,241,.3)}
+    .thumb:hover{opacity:1}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .gallery-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;z-index:3;opacity:0;transition:opacity .3s}
+    .gallery-main:hover .gallery-nav{opacity:1}
+    .gallery-nav.prev{left:10px}
+    .gallery-nav.next{right:10px}
+    .wishlist-btn{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.4);backdrop-filter:blur(8px);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.1rem;z-index:3;transition:all .3s}
+    .wishlist-btn.active{color:#ef4444;background:rgba(239,68,68,.15)}
+    .wishlist-btn:hover{transform:scale(1.15)}
+    .product-info-section{flex:1}
+    .product-badge{display:inline-block;padding:5px 14px;border-radius:var(--radius-full);font-size:.8rem;font-weight:600;margin-bottom:12px}
+    .badge-Electronics{background:rgba(99,102,241,.15);color:#6366f1}
+    .badge-Fashion{background:rgba(236,72,153,.15);color:#ec4899}
+    .badge-Grocery{background:rgba(16,185,129,.15);color:#10b981}
+    .badge-Stationary{background:rgba(245,158,11,.15);color:#f59e0b}
+    .badge-Others{background:rgba(139,92,246,.15);color:#8b5cf6}
+    .detail-title{font-size:1.9rem;margin-bottom:10px;line-height:1.3}
+    .detail-rating{display:flex;align-items:center;gap:10px;margin-bottom:18px;color:var(--text-secondary)}
+    .stars{color:#f59e0b}
+    .detail-price{font-size:2.4rem;font-weight:800;margin-bottom:5px}
+    .detail-price .currency{font-size:1.4rem}
+    .mrp{color:var(--text-secondary);text-decoration:line-through;font-size:1.1rem;margin-left:10px}
+    .discount-tag{background:#10b981;color:#fff;padding:3px 10px;border-radius:var(--radius-full);font-size:.85rem;font-weight:600;margin-left:10px}
+    .detail-desc{color:var(--text-secondary);line-height:1.8;margin:18px 0 22px;font-size:1.02rem}
+    .offer-strip{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+    .offer-tag{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius-md);font-size:.82rem;font-weight:500;border:1px dashed}
+    .offer-tag.green{background:rgba(16,185,129,.08);color:#10b981;border-color:rgba(16,185,129,.3)}
+    .offer-tag.blue{background:rgba(99,102,241,.08);color:#6366f1;border-color:rgba(99,102,241,.3)}
+    .offer-tag.orange{background:rgba(245,158,11,.08);color:#f59e0b;border-color:rgba(245,158,11,.3)}
+    .variant-section{margin-bottom:20px}
+    .variant-label{font-weight:600;font-size:.9rem;margin-bottom:8px}
+    .variant-options{display:flex;gap:8px;flex-wrap:wrap}
+    .variant-chip{padding:7px 18px;border-radius:var(--radius-full);border:2px solid var(--border-color);background:var(--bg-glass);cursor:pointer;font-size:.85rem;font-weight:500;transition:all .2s;color:var(--text-primary)}
+    .variant-chip:hover{border-color:var(--accent-primary)}
+    .variant-chip.active{border-color:var(--accent-primary);background:rgba(99,102,241,.1);color:var(--accent-primary)}
+    .qty-selector{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+    .qty-selector label{font-weight:600;font-size:.9rem}
+    .qty-box{display:flex;align-items:center;border:1px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden}
+    .qty-box button{width:36px;height:36px;background:var(--bg-glass);border:none;color:var(--text-primary);cursor:pointer;font-size:1rem;transition:background .2s}
+    .qty-box button:hover{background:var(--bg-glass-hover)}
+    .qty-box span{width:40px;text-align:center;font-weight:600;font-size:.95rem}
+    .detail-actions{display:flex;gap:15px;margin-bottom:25px;flex-wrap:wrap}
+    .btn-buy{background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;box-shadow:0 4px 14px rgba(249,115,22,.4);padding:13px 32px;font-size:1rem}
+    .btn-buy:hover{box-shadow:0 6px 20px rgba(249,115,22,.5);transform:translateY(-2px)}
+    .btn-cart-detail{background:linear-gradient(135deg,var(--accent-primary),var(--accent-primary-hover));color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.4);padding:13px 32px;font-size:1rem}
+    .btn-cart-detail:hover{box-shadow:0 6px 20px rgba(99,102,241,.5);transform:translateY(-2px)}
+    .info-badges{display:flex;gap:20px;color:var(--text-secondary);font-size:.88rem;flex-wrap:wrap;padding:18px 0;border-top:1px solid var(--border-color);border-bottom:1px solid var(--border-color);margin-bottom:20px}
+    .info-badges span{display:flex;align-items:center;gap:6px}
+    .delivery-check{display:flex;gap:10px;align-items:center;margin-bottom:20px}
+    .delivery-check input{flex:1;max-width:200px;padding:9px 14px;border-radius:var(--radius-md);border:1px solid var(--border-color);background:var(--bg-glass);color:var(--text-primary);font-size:.9rem}
+    .delivery-check button{padding:9px 18px;border-radius:var(--radius-md);border:none;background:var(--accent-primary);color:#fff;font-weight:600;cursor:pointer;font-size:.85rem}
+    .delivery-result{font-size:.85rem;color:var(--success);margin-bottom:15px;display:none}
+    .delivery-result i{margin-right:5px}
+    /* Tabs */
+    .tabs{display:flex;gap:0;margin-bottom:25px;border-bottom:2px solid var(--border-color);overflow-x:auto}
+    .tab-btn{padding:12px 22px;background:0;border:none;color:var(--text-secondary);font-weight:600;cursor:pointer;position:relative;transition:color .2s;white-space:nowrap;font-size:.95rem}
+    .tab-btn.active{color:var(--accent-primary)}
+    .tab-btn.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:3px;background:var(--accent-primary);border-radius:2px}
+    .tab-content{display:none;animation:fadeIn .3s ease}
+    .tab-content.active{display:block}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    /* Specs */
+    .specs-table{width:100%;border-collapse:collapse}
+    .specs-table tr:nth-child(even){background:var(--bg-glass)}
+    .specs-table td{padding:14px 18px;border-bottom:1px solid var(--border-color)}
+    .specs-table td:first-child{font-weight:600;color:var(--text-secondary);width:35%}
+    /* Reviews */
+    .review-summary{display:flex;gap:40px;align-items:center;margin-bottom:30px;padding:25px;background:var(--bg-glass);border-radius:var(--radius-lg);border:1px solid var(--border-color)}
+    .review-big-num{text-align:center;min-width:120px}
+    .review-big-num .num{font-size:3.5rem;font-weight:800;line-height:1}
+    .review-big-num .stars-row{color:#f59e0b;margin:6px 0}
+    .review-big-num .total{color:var(--text-secondary);font-size:.85rem}
+    .rating-bars{flex:1}
+    .rating-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:.85rem}
+    .rating-bar-row .label{min-width:25px;text-align:right;font-weight:600}
+    .rating-bar-row .bar{flex:1;height:8px;background:var(--bg-glass-hover);border-radius:var(--radius-full);overflow:hidden}
+    .rating-bar-row .bar-fill{height:100%;border-radius:var(--radius-full);background:#f59e0b;transition:width .6s}
+    .rating-bar-row .count{min-width:35px;color:var(--text-secondary)}
+    .review-card{display:flex;gap:15px;padding:22px 0;border-bottom:1px solid var(--border-color)}
+    .review-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;font-size:.95rem}
+    .review-stars{color:#f59e0b;font-size:.85rem;margin-bottom:5px}
+    .review-text{color:var(--text-secondary);font-size:.93rem;line-height:1.7}
+    .review-name{font-weight:600;font-size:.95rem}
+    .review-date{color:var(--text-secondary);font-size:.8rem}
+    .review-helpful{display:flex;gap:15px;margin-top:10px;font-size:.82rem;color:var(--text-secondary)}
+    .review-helpful button{background:0;border:1px solid var(--border-color);color:var(--text-secondary);padding:4px 12px;border-radius:var(--radius-full);cursor:pointer;font-size:.8rem;transition:all .2s}
+    .review-helpful button:hover{border-color:var(--accent-primary);color:var(--accent-primary)}
+    .review-verified{color:#10b981;font-size:.78rem;font-weight:600;display:flex;align-items:center;gap:4px}
+    .write-review-form{background:var(--bg-glass);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:25px;margin-top:25px}
+    .write-review-form h4{margin-bottom:15px}
+    .star-input{display:flex;gap:5px;margin-bottom:15px;font-size:1.5rem;color:var(--border-color);cursor:pointer}
+    .star-input i.active{color:#f59e0b}
+    .star-input i:hover,.star-input i:hover~i{color:#f59e0b}
+    .write-review-form textarea{width:100%;min-height:100px;padding:12px;border-radius:var(--radius-md);border:1px solid var(--border-color);background:var(--bg-glass);color:var(--text-primary);font-size:.9rem;resize:vertical;margin-bottom:12px}
+    .write-review-form input[type="text"]{width:100%;padding:10px 12px;border-radius:var(--radius-md);border:1px solid var(--border-color);background:var(--bg-glass);color:var(--text-primary);font-size:.9rem;margin-bottom:12px}
+    /* Related */
+    .related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+    .related-card{border-radius:var(--radius-md);overflow:hidden;background:var(--bg-surface);border:1px solid var(--border-color);transition:transform .3s,box-shadow .3s;cursor:pointer;text-decoration:none;color:inherit}
+    .related-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-md)}
+    .related-card img{width:100%;height:180px;object-fit:cover}
+    .related-card-info{padding:15px}
+    .related-card-info h4{font-size:.92rem;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .related-card-info .price{color:var(--accent-primary);font-weight:700}
+    .related-card-info .r-rating{font-size:.8rem;color:#f59e0b;margin-top:4px}
+    /* Bought Together */
+    .bought-together{display:flex;align-items:center;gap:15px;flex-wrap:wrap;padding:20px;background:var(--bg-glass);border:1px solid var(--border-color);border-radius:var(--radius-lg);margin-top:20px}
+    .bt-item{text-align:center;width:120px}
+    .bt-item img{width:80px;height:80px;object-fit:cover;border-radius:var(--radius-md);margin-bottom:5px}
+    .bt-item p{font-size:.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .bt-item .bt-price{font-size:.8rem;font-weight:700;color:var(--accent-primary)}
+    .bt-plus{font-size:1.5rem;color:var(--text-secondary);font-weight:300}
+    .bt-total{margin-left:auto;text-align:center}
+    .bt-total .bt-total-price{font-size:1.3rem;font-weight:800;margin-bottom:8px}
+    /* Image Zoom Modal */
+    .zoom-modal{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:10000;display:none;align-items:center;justify-content:center;cursor:zoom-out}
+    .zoom-modal.active{display:flex}
+    .zoom-modal img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--radius-md)}
+    .zoom-close{position:absolute;top:20px;right:25px;background:0;border:0;color:#fff;font-size:2rem;cursor:pointer}
+    /* Share */
+    .share-row{display:flex;gap:10px;margin-top:15px}
+    .share-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border-color);background:var(--bg-glass);color:var(--text-secondary);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.9rem}
+    .share-btn:hover{background:var(--accent-primary);color:#fff;border-color:var(--accent-primary)}
+    @media(max-width:768px){
+      .product-detail{flex-direction:column}
+      .gallery{max-width:100%;position:static}
+      .detail-title{font-size:1.4rem}
+      .detail-price{font-size:1.8rem}
+      .detail-actions{flex-direction:column}
+      .detail-actions .btn{width:100%;text-align:center}
+      .review-summary{flex-direction:column;text-align:center}
+      .bought-together{flex-direction:column}
+      .bt-total{margin-left:0;margin-top:10px}
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">Safari.</a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#catalog" class="nav-link">Catalog</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="theme-toggle" class="icon-btn"><i id="theme-icon" class="fas fa-sun"></i></button>
+        <a href="cart.html" class="icon-btn"><i class="fas fa-shopping-bag"></i><span id="cart-badge" class="cart-badge" style="display:none;">0</span></a>
+        <a href="login.html" id="auth-link" class="btn btn-secondary"><i class="fas fa-sign-in-alt"></i> Login</a>
+      </div>
+    </div>
+  </nav>
+  <main>
+    <nav style="margin-bottom:15px;color:var(--text-secondary);font-size:.9rem;">
+      <a href="index.html" style="color:var(--accent-primary);">Home</a> <i class="fas fa-chevron-right" style="font-size:.7rem;margin:0 8px;"></i>
+      <span id="breadcrumb-cat">Category</span> <i class="fas fa-chevron-right" style="font-size:.7rem;margin:0 8px;"></i>
+      <span id="breadcrumb-name">Product</span>
+    </nav>
+    <section class="product-detail animate-fade-in">
+      <div class="gallery">
+        <div class="gallery-main" id="gallery-main">
+          <button class="gallery-nav prev" id="img-prev"><i class="fas fa-chevron-left"></i></button>
+          <button class="gallery-nav next" id="img-next"><i class="fas fa-chevron-right"></i></button>
+          <button class="wishlist-btn" id="wishlist-btn"><i class="far fa-heart"></i></button>
+          <img id="main-image" src="" alt="Product">
+        </div>
+        <div class="gallery-thumbs" id="thumbs-container"></div>
+      </div>
+      <div class="product-info-section">
+        <span class="product-badge" id="product-badge">Category</span>
+        <h1 class="detail-title" id="product-name">Product Name</h1>
+        <div class="detail-rating" id="rating-scroll-target" style="cursor: pointer;" title="View Reviews">
+          <span class="stars" id="product-stars"></span>
+          <span id="product-rating">4.5</span>
+          <span>|</span>
+          <span id="product-reviews">0 Reviews</span>
+          <span style="color:#10b981;font-size:.8rem;font-weight:600;margin-left:5px;" id="stock-status">✓ In Stock</span>
+        </div>
+        <div style="display:flex;align-items:center;flex-wrap:wrap;">
+          <span class="detail-price"><span class="currency">₹</span><span id="product-price">0</span></span>
+          <span class="mrp" id="product-mrp">₹0</span>
+          <span class="discount-tag" id="product-discount">0% off</span>
+        </div>
+        <p style="font-size:.82rem;color:var(--text-secondary);margin-top:4px;">Inclusive of all taxes. Free shipping on orders above ₹500.</p>
+        <div class="offer-strip" style="margin-top:15px;">
+          <span class="offer-tag green"><i class="fas fa-tag"></i> Extra 5% off on UPI</span>
+          <span class="offer-tag blue"><i class="fas fa-credit-card"></i> No-cost EMI</span>
+          <span class="offer-tag orange"><i class="fas fa-gift"></i> Gift wrapping available</span>
+        </div>
+        <p class="detail-desc" id="product-desc">Description</p>
+        <div class="variant-section" id="size-section" style="display:none;">
+          <div class="variant-label">Size</div>
+          <div class="variant-options" id="size-options"></div>
+        </div>
+        <div class="variant-section" id="color-section" style="display:none;">
+          <div class="variant-label">Color</div>
+          <div class="variant-options" id="color-options"></div>
+        </div>
+        <div class="qty-selector">
+          <label>Qty:</label>
+          <div class="qty-box">
+            <button id="qty-minus">−</button>
+            <span id="qty-display">1</span>
+            <button id="qty-plus">+</button>
+          </div>
+        </div>
+        <div class="detail-actions">
+          <button class="btn btn-cart-detail" id="add-cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+          <button class="btn btn-buy" id="buy-now-btn"><i class="fas fa-bolt"></i> Buy Now</button>
+        </div>
+        <div class="info-badges">
+          <span><i class="fas fa-truck" style="color:var(--success);"></i> Free Delivery</span>
+          <span><i class="fas fa-undo" style="color:var(--accent-primary);"></i> 30 Day Returns</span>
+          <span><i class="fas fa-shield-alt" style="color:var(--warning);"></i> 1 Year Warranty</span>
+          <span><i class="fas fa-medal" style="color:#ec4899;"></i> Genuine Product</span>
+        </div>
+        <div class="delivery-check">
+          <input type="text" id="pincode-input" placeholder="Enter pincode" maxlength="6">
+          <button id="pincode-check">Check</button>
+        </div>
+        <div class="delivery-result" id="delivery-result"><i class="fas fa-check-circle"></i> <span id="delivery-text"></span></div>
+        <div class="share-row">
+          <span style="font-size:.85rem;font-weight:600;margin-right:5px;display:flex;align-items:center;">Share:</span>
+          <button class="share-btn" title="Copy link" id="share-copy"><i class="fas fa-link"></i></button>
+          <button class="share-btn" title="WhatsApp" onclick="window.open('https://wa.me/?text='+encodeURIComponent(location.href))"><i class="fab fa-whatsapp"></i></button>
+          <button class="share-btn" title="Twitter" onclick="window.open('https://twitter.com/intent/tweet?url='+encodeURIComponent(location.href))"><i class="fab fa-twitter"></i></button>
+          <button class="share-btn" title="Facebook" onclick="window.open('https://facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href))"><i class="fab fa-facebook-f"></i></button>
+        </div>
+      </div>
+    </section>
+    <section style="margin-top:50px;">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="specs">Specifications</button>
+        <button class="tab-btn" data-tab="reviews">Reviews</button>
+        <button class="tab-btn" data-tab="faq">Q & A</button>
+        <button class="tab-btn" data-tab="related">Related Products</button>
+      </div>
+      <div class="tab-content active" id="tab-specs">
+        <div class="glass-card" style="padding:0;overflow:hidden;">
+          <table class="specs-table" id="specs-table"><tbody></tbody></table>
+        </div>
+        <div class="bought-together" id="bought-together" style="display:none;">
+          <h4 style="width:100%;margin-bottom:5px;font-size:1rem;">🛒 Frequently Bought Together</h4>
+          <div id="bt-items" style="display:flex;align-items:center;gap:15px;flex-wrap:wrap;width:100%;"></div>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-reviews">
+        <div class="review-summary" id="review-summary"></div>
+        <div id="reviews-container"></div>
+        <div class="write-review-form">
+          <h4><i class="fas fa-pen"></i> Write a Review</h4>
+          <div class="star-input" id="star-input">
+            <i class="far fa-star" data-val="1"></i>
+            <i class="far fa-star" data-val="2"></i>
+            <i class="far fa-star" data-val="3"></i>
+            <i class="far fa-star" data-val="4"></i>
+            <i class="far fa-star" data-val="5"></i>
+          </div>
+          <input type="text" id="review-name-input" placeholder="Your Name">
+          <textarea id="review-text-input" placeholder="Share your experience with this product..."></textarea>
+          <button class="btn btn-primary" id="submit-review" style="padding:10px 24px;"><i class="fas fa-paper-plane"></i> Submit Review</button>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-faq">
+        <div class="glass-card" id="faq-container"></div>
+      </div>
+      <div class="tab-content" id="tab-related">
+        <div class="related-grid" id="related-grid"></div>
+      </div>
+    </section>
+  </main>
+  <!-- Zoom Modal -->
+  <div class="zoom-modal" id="zoom-modal">
+    <button class="zoom-close" id="zoom-close"><i class="fas fa-times"></i></button>
+    <img id="zoom-image" src="" alt="Zoomed">
+  </div>
+  <div class="chat-widget">
+    <button id="chat-toggle" class="chat-toggle"><i class="fas fa-comment-dots"></i></button>
+    <div id="chat-window" class="chat-window">
+      <div class="chat-header"><h3><i class="fas fa-robot"></i> Safari AI Support</h3><button id="chat-close" class="chat-close"><i class="fas fa-times"></i></button></div>
+      <div id="chat-messages" class="chat-messages"><div class="chat-msg bot">Hello! I'm Safari's virtual assistant. How can I help you today?</div></div>
+      <div class="chat-input-area"><input type="text" id="chat-input" class="chat-input" placeholder="Type your question..."><button id="chat-send" class="chat-send"><i class="fas fa-paper-plane"></i></button></div>
+    </div>
+  </div>
+  <button id="scroll-top" class="scroll-top-btn"><i class="fas fa-arrow-up"></i></button>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/product.js"></script>
+</body>
+</html>

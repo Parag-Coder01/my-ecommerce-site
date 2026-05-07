@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | Safari Premium</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .profile-container {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+    }
+
+    .profile-sidebar {
+      flex: 1;
+      max-width: 300px;
+    }
+
+    .profile-content {
+      flex: 3;
+    }
+
+    .avatar-wrapper {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 3rem;
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    .profile-name {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+    }
+
+    .profile-email {
+      text-align: center;
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+    }
+
+    .order-card {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+      background: var(--bg-glass);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+
+    .order-item-line {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .profile-container {
+        flex-direction: column;
+      }
+      .profile-sidebar {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">Safari.</a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="theme-toggle" class="icon-btn">
+          <i id="theme-icon" class="fas fa-sun"></i>
+        </button>
+        <a href="cart.html" class="icon-btn">
+          <i class="fas fa-shopping-bag"></i>
+          <span id="cart-badge" class="cart-badge" style="display: none;">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <div class="profile-container">
+      <!-- Sidebar -->
+      <div class="glass-card profile-sidebar">
+        <div class="avatar-wrapper" id="profile-initial">
+          U
+        </div>
+        <h2 class="profile-name" id="profile-name">User Name</h2>
+        <p class="profile-email" id="profile-email">user@example.com</p>
+        
+        <button id="logout-btn" class="btn btn-secondary btn-block" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.3);">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="profile-content">
+        <h2 style="margin-bottom: 20px;">Order History</h2>
+        <div id="orders-container">
+          <!-- Orders injected here -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = App.getUser();
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      document.getElementById('profile-name').textContent = user.name;
+      document.getElementById('profile-email').textContent = user.email;
+      document.getElementById('profile-initial').textContent = user.name.charAt(0).toUpperCase();
+
+      const ordersContainer = document.getElementById('orders-container');
+      const orders = user.orders || [];
+
+      if (orders.length === 0) {
+        ordersContainer.innerHTML = `
+          <div class="glass-card" style="text-align: center; padding: 40px;">
+            <i class="fas fa-box-open" style="font-size: 3rem; color: var(--border-color); margin-bottom: 15px;"></i>
+            <p style="color: var(--text-secondary);">You haven't placed any orders yet.</p>
+            <a href="index.html#catalog" class="btn btn-primary mt-4">Start Shopping</a>
+          </div>
+        `;
+      } else {
+        // Reverse to show newest first
+        [...orders].reverse().forEach(order => {
+          let itemsHtml = order.items.map(item => `
+            <div class="order-item-line">
+              <span>${item.quantity}x ${item.name}</span>
+              <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+            </div>
+          `).join('');
+
+          ordersContainer.innerHTML += `
+            <div class="order-card">
+              <div class="order-header">
+                <div>
+                  <div style="font-weight: 700; margin-bottom: 5px;">Order #${order.id}</div>
+                  <div style="font-size: 0.85rem; color: var(--text-secondary);">${order.date}</div>
+                </div>
+                <div class="status-badge">${order.status || 'Delivered'}</div>
+              </div>
+              <div style="margin-bottom: 15px;">
+                ${itemsHtml}
+              </div>
+              <div style="text-align: right; font-weight: 700; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                Total: ₹${order.total.toFixed(2)}
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('currentUser');
+        window.location.href = 'index.html';
+      });
+    });
+  </script>
+</body>
+</html>
